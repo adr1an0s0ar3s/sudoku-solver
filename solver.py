@@ -1,4 +1,5 @@
 import math
+import time
 
 #------------------------------------ Back-Tracking Method ----------------------------------------
 
@@ -31,7 +32,16 @@ def check_column(M, x, value):
     
     return True
 
-def print_sudoku(M):
+def board_complete(M):
+
+    for y in range(len(M)):
+        for x in range(len(M)):
+            if (M[y][x] == 0):
+                return False
+
+    return True
+
+def print_board(M):
 
     for y in range(len(M)):
         for x in range(len(M)):
@@ -45,10 +55,12 @@ def print_sudoku(M):
             
             if ((y+1)%3 == 0 and x == len(M)-1 and y != len(M)-1):
                 print("-------+-------+-------")
+    
+    print()
 
 # Brain Function
 
-def solver(M):
+def back_tracking_solver(M):
 
     m = M.copy()
     possible_value = False
@@ -63,32 +75,58 @@ def solver(M):
                 if (check_square(m, x, y, value) and check_row(m, y, value) and check_column(m, x, value)):
                     m[y][x] = value
                     possible_value = True
-                    if (not solver(m)):
+                    if (not back_tracking_solver(m)):
                         m[y][x] = 0
                         possible_value = False
 
             if (not possible_value): return False
     
-    print_sudoku(m)
+    print_board(m)
 
-M = [[0,0,4,7,1,0,0,0,0]
-    ,[0,7,2,8,0,6,5,0,0]
-    ,[0,0,0,0,0,5,0,0,7]
-    ,[0,1,0,6,9,0,2,0,0]
-    ,[3,9,0,0,5,0,0,0,0]
-    ,[0,0,0,0,0,0,0,8,5]
-    ,[0,0,1,2,3,0,8,0,4]
-    ,[0,0,3,5,0,4,0,0,2]
-    ,[2,4,0,9,0,0,0,0,0]]
+def back_tracking_greedy_solver(M):
 
-m = [[0,0,0,0,9,0,0,2,0]
-    ,[4,0,2,5,0,0,0,6,0]
-    ,[0,5,3,0,7,0,0,4,0]
-    ,[0,7,8,0,0,1,0,0,0]
-    ,[9,0,0,0,5,0,0,0,0]
-    ,[0,4,0,6,0,0,0,0,0]
-    ,[0,0,0,0,0,7,0,0,2]
-    ,[5,0,0,0,4,0,7,0,0]
-    ,[0,0,0,0,0,0,1,0,6]]
+    if (board_complete(M)):
+        print_board(M)
+        return True
 
-solver(M)
+    m = M.copy()
+
+    # Find coordinates with less possibilities
+    best_x = 0; best_y = 0
+    possibilities = [1,2,3,4,5,6,7,8,9]
+    for y in range(9):
+        for x in range(9):
+            if (m[y][x] != 0):
+                continue
+            temp = [value for value in range(1, 10) if (check_square(m, x, y, value) and check_row(m, y, value) and check_column(m, x, value))]
+            if (len(temp) == 0):
+                return False
+            elif (len(possibilities) > len(temp)):
+                best_x = x; best_y = y
+                possibilities = temp.copy()
+
+    for value in possibilities:
+        m[best_y][best_x] = value
+        if back_tracking_greedy_solver(m):
+            return True
+        m[best_y][best_x] = 0
+
+    return False
+
+matrix = [[0,0,0,0,9,0,0,2,0]
+         ,[4,0,2,5,0,0,0,6,0]
+         ,[0,5,3,0,7,0,0,4,0]
+         ,[0,7,8,0,0,1,0,0,0]
+         ,[9,0,0,0,5,0,0,0,0]
+         ,[0,4,0,6,0,0,0,0,0]
+         ,[0,0,0,0,0,7,0,0,2]
+         ,[5,0,0,0,4,0,7,0,0]
+         ,[0,0,0,0,0,0,1,0,6]]
+
+t0 = time.time()
+back_tracking_solver(matrix)
+t1 = time.time()
+back_tracking_greedy_solver(matrix)
+t2 = time.time()
+print(f"Back-Tracking Algorithm: {t1-t0}")
+print(f"Back-Tracking Algorithm with Greedy Approach: {t2-t1}")

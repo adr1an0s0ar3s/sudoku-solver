@@ -16,6 +16,5 @@ int main() {
 
     Sudoku test(board);
 
-    // TODO: Create a print() method
-    std::cout << test.solve() << std::endl;
+    if (test.solve()) std::cout << test;
 }

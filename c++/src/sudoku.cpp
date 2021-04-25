@@ -1,14 +1,11 @@
 #include "sudoku.h"
 
 Sudoku::Sudoku(int board[9][9]) {
-    for (int row = 0; row < 9; ++row) {
-        for (int column = 0; column < 9; ++column) {
-            place(board[row][column], column, row);
 
+    for (int row = 0; row < 9; ++row)
+        for (int column = 0; column < 9; ++column)
             for (int value = 0; value <= 9; ++value)
                 squares[row/3][column/3][value] = false;
-        }
-    }
 
     for (int n = 0; n < 9; ++n) {
         for (int value = 0; value <= 9; ++value) {
@@ -17,6 +14,12 @@ Sudoku::Sudoku(int board[9][9]) {
         }
     }
 
+    for (int row = 0; row < 9; ++row) {
+        for (int column = 0; column < 9; ++column) {
+            if (board[row][column] == 0) this->board[row][column] = 0;
+            else place(board[row][column], row, column);
+        }
+    }
 }
 
 void Sudoku::place(const int &value, const int &row, const int &column) {
@@ -45,6 +48,7 @@ bool Sudoku::complete() const {
 }
 
 bool Sudoku::solve() {
+
     if (complete()) return true;
 
     int bestRow, bestColumn, bestP = 10, possibilities;
@@ -57,7 +61,7 @@ bool Sudoku::solve() {
 
             // Check Possibilities
             possibilities = 0;
-            for (int value = 1; value <= 9; ++value) if (accepts(value, row, column)) possibilities++;  // TODO: Could keep the possibilities in an array for later
+            for (int value = 1; value <= 9; ++value) if (accepts(value, row, column)) possibilities++;
 
             // Check if no possibilities found
             if (possibilities == 0) return false;
@@ -79,4 +83,20 @@ bool Sudoku::solve() {
     }
 
     return false;
+}
+
+void Sudoku::print(std::ostream &out) const {
+    for (int row = 0; row < 9; ++row) {
+        for (int column = 0; column < 9; ++column) {
+            out << " " << board[row][column];
+            if (column == 2 || column == 5) out << " |";
+        }
+        out << std::endl;
+        if (row == 2 || row == 5) out << "-------+-------+-------\n";
+    }
+}
+
+std::ostream& operator<<(std::ostream &out, const Sudoku &s) {
+    s.print(out);
+    return out;
 }

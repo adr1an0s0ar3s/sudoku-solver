@@ -123,10 +123,17 @@ matrix = [[0,0,0,0,9,0,0,2,0]
          ,[5,0,0,0,4,0,7,0,0]
          ,[0,0,0,0,0,0,1,0,6]]
 
+print_board(matrix)
+
+print("Back-Tracking Algorithm:")
 t0 = time.time()
 back_tracking_solver(matrix)
 t1 = time.time()
-back_tracking_greedy_solver(matrix)
+
+print("Back-Tracking Algorithm with Greedy Approach:")
 t2 = time.time()
+back_tracking_greedy_solver(matrix)
+t3 = time.time()
+
 print(f"Back-Tracking Algorithm: {t1-t0}")
-print(f"Back-Tracking Algorithm with Greedy Approach: {t2-t1}")
+print(f"Back-Tracking Algorithm with Greedy Approach: {t3-t2}")

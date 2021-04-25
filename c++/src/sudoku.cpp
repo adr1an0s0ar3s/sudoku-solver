@@ -2,6 +2,7 @@
 
 Sudoku::Sudoku(int board[9][9]) {
 
+    // Clear the arrays
     for (int row = 0; row < 9; ++row)
         for (int column = 0; column < 9; ++column)
             for (int value = 0; value <= 9; ++value)
@@ -14,12 +15,43 @@ Sudoku::Sudoku(int board[9][9]) {
         }
     }
 
+    // Copy the board
     for (int row = 0; row < 9; ++row) {
         for (int column = 0; column < 9; ++column) {
             if (board[row][column] == 0) this->board[row][column] = 0;
             else place(board[row][column], row, column);
         }
     }
+}
+
+Sudoku::Sudoku(char *filePath) {
+
+    // open file
+    std::fstream file;
+    file.open(filePath);
+    if (!file.is_open()) throw std::invalid_argument("Filepath not valid");
+
+    // Clear the arrays
+    for (int row = 0; row < 9; ++row)
+        for (int column = 0; column < 9; ++column)
+            for (int value = 0; value <= 9; ++value)
+                squares[row/3][column/3][value] = false;
+
+    for (int n = 0; n < 9; ++n) {
+        for (int value = 0; value <= 9; ++value) {
+            columns[n][value] = false;
+            rows[n][value] = false;
+        }
+    }
+
+    // Zero out the board
+    for (int row = 0; row < 9; ++row)
+        for (int column = 0; column < 9; ++column)
+            board[row][column] = 0;
+
+    // Read the numbers in the file
+    int row, column, value;
+    while (file >> row >> column >> value) place(value, row, column);
 }
 
 void Sudoku::place(const int &value, const int &row, const int &column) {

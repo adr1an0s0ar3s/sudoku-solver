@@ -2,6 +2,8 @@
 #define SUDOKU_H
 
 #include <iostream>
+#include <fstream>
+#include <string>
 
 class Sudoku {
 private:
@@ -47,7 +49,19 @@ private:
 
 public:
 
+    /**
+     * @brief Copies the board in its argument and updates the arrays and number count accordingly
+     * 
+     * @param board Matrix 9x9 with blank spaces filled by 0
+     */
     Sudoku(int board[9][9]);
+
+    /**
+     * @brief Copies the board in the file and updates the arrays and number count accordingly
+     * 
+     * @param filePath The file that contains the board (each line with "row column value" without blank spaces)
+     */
+    Sudoku(char *filePath);
 
     /**
      * @brief Solves the board and returns a boolean stating if it's possible or not
@@ -62,7 +76,7 @@ public:
      * @param out Output stream
      */
     void print(std::ostream &out) const;
-    
+
     friend std::ostream& operator<<(std::ostream &out, const Sudoku &s);
 };
 

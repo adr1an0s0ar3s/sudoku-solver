@@ -1,20 +1,18 @@
 #include "sudoku.h"
 #include <iostream>
+#include <fstream>
 
-int main() {
+int main(int argc, char *argv[]) {
 
-    // TODO: Read board from a file
-    int board[9][9] = {{0,0,0,0,9,0,0,2,0}
-                      ,{4,0,2,5,0,0,0,6,0}
-                      ,{0,5,3,0,7,0,0,4,0}
-                      ,{0,7,8,0,0,1,0,0,0}
-                      ,{9,0,0,0,5,0,0,0,0}
-                      ,{0,4,0,6,0,0,0,0,0}
-                      ,{0,0,0,0,0,7,0,0,2}
-                      ,{5,0,0,0,4,0,7,0,0}
-                      ,{0,0,0,0,0,0,1,0,6}};
+    // Check input size
+    if (argc != 2) {
+        std::cout << "usage: sudoku filepath\n";
+        return 1;
+    }
 
-    Sudoku test(board);
-
+    Sudoku test(argv[1]);
     if (test.solve()) std::cout << test;
+    else std::cout << "Impossible to solve!";
+
+    return 0;
 }

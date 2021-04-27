@@ -15,6 +15,8 @@ Sudoku::Sudoku(int board[9][9]) {
         }
     }
 
+    numbers = 0;
+
     // Copy the board
     for (int row = 0; row < 9; ++row) {
         for (int column = 0; column < 9; ++column) {
@@ -44,6 +46,8 @@ Sudoku::Sudoku(char *filePath) {
         }
     }
 
+    numbers = 0;
+
     // Zero out the board
     for (int row = 0; row < 9; ++row)
         for (int column = 0; column < 9; ++column)
@@ -52,6 +56,8 @@ Sudoku::Sudoku(char *filePath) {
     // Read the numbers in the file
     int row, column, value;
     while (file >> row >> column >> value) place(value, row, column);
+
+    file.close();
 }
 
 void Sudoku::place(const int &value, const int &row, const int &column) {
@@ -80,7 +86,7 @@ bool Sudoku::complete() const {
 }
 
 bool Sudoku::solve() {
-
+    
     if (complete()) return true;
 
     int bestRow, bestColumn, bestP = 10, possibilities;

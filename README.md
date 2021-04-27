@@ -1,6 +1,6 @@
 # Sudoku Solver
 
-This is a private project not only written in Python (mainly for practice) but also in C++, capable to solve any sudoku board with different methods.
+This is a personal project not only written in Python (mainly for practice) but also in C++, capable to solve any sudoku board using different methods.
 
 ## Python
 

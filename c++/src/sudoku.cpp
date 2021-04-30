@@ -24,6 +24,8 @@ Sudoku::Sudoku(int board[9][9]) {
             else place(board[row][column], row, column);
         }
     }
+
+    n_solutions = 0;
 }
 
 Sudoku::Sudoku(char *filePath) {
@@ -57,6 +59,8 @@ Sudoku::Sudoku(char *filePath) {
     int row, column, value;
     while (file >> row >> column >> value) place(value, row, column);
 
+    n_solutions = 0;
+
     file.close();
 }
 
@@ -85,9 +89,12 @@ bool Sudoku::complete() const {
     return numbers == 81;
 }
 
-bool Sudoku::solve() {
+int Sudoku::solve() {
     
-    if (complete()) return true;
+    if (complete()) {
+        save_solution();
+        return 1;
+    }
 
     int bestRow, bestColumn, bestP = 10, possibilities;
 
@@ -102,7 +109,7 @@ bool Sudoku::solve() {
             for (int value = 1; value <= 9; ++value) if (accepts(value, row, column)) possibilities++;
 
             // Check if no possibilities found
-            if (possibilities == 0) return false;
+            if (possibilities == 0) return 0;
 
             // Compare with Best and change Accordingly
             if (possibilities < bestP) {
@@ -112,29 +119,45 @@ bool Sudoku::solve() {
         }
     }
 
+    int solutions = 0;
+
     for (int value = 1; value <= 9; ++value) {
         if (accepts(value, bestRow, bestColumn)) {
             place(value, bestRow, bestColumn);
-            if (solve()) return true;
+            if ((solutions += solve()) >= 3) return solutions;
             clear(bestRow, bestColumn);
         }
     }
 
-    return false;
+    return solutions;
 }
 
 void Sudoku::print(std::ostream &out) const {
-    for (int row = 0; row < 9; ++row) {
-        for (int column = 0; column < 9; ++column) {
-            out << " " << board[row][column];
-            if (column == 2 || column == 5) out << " |";
+
+    for (int solution = 0; solution < n_solutions; ++solution) {
+        for (int row = 0; row < 9; ++row) {
+            for (int column = 0; column < 9; ++column) {
+                out << " " << solutions[solution][row][column];
+                if (column == 2 || column == 5) out << " |";
+            }
+            out << std::endl;
+            if (row == 2 || row == 5) out << "-------+-------+-------\n";
         }
-        out << std::endl;
-        if (row == 2 || row == 5) out << "-------+-------+-------\n";
+
+        std::cout << std::endl;
     }
 }
 
 std::ostream& operator<<(std::ostream &out, const Sudoku &s) {
     s.print(out);
     return out;
+}
+
+void Sudoku::save_solution() {
+
+    for (int row = 0; row < 9; ++row)
+        for (int column = 0; column < 9; ++column)
+            solutions[n_solutions][row][column] = board[row][column];
+
+    n_solutions++;
 }

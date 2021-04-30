@@ -13,6 +13,9 @@ private:
     bool squares[3][3][10];
     int numbers;
 
+    int solutions[100][9][9];
+    int n_solutions;
+
     /**
      * @brief Places the value in the respective cell, updates the respective boolean in the arrays and the number count
      * 
@@ -47,6 +50,8 @@ private:
      */
     bool complete() const;
 
+    void save_solution();
+    
 public:
 
     /**
@@ -68,7 +73,7 @@ public:
      * 
      * @return True, if it was able to find a solution, False otherwise
      */
-    bool solve();
+    int solve();
 
     /**
      * @brief Prints the board
